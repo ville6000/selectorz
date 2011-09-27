@@ -9,29 +9,13 @@
 			textarea,
 			close;
 		
-		// @todo: change styles from div.style.xxx = div.style.cssText
 		div = doc.createElement('div');
 		div.id = 'selectorz_wrapper';
-		div.style.width = '550px';
-		div.style.position = 'absolute';
-		div.style.top = '35px';
-		div.style.right = '35px';
-		div.style.padding = '10px';
-		div.style.paddingTop = '40px';
-		div.style.background = '#fff';
-		div.style.border = '1px solid #ccc';
-		div.style.fontSize = '13px';
-		div.style.fontFamily = 'Helvetica, Arial, sans-serif';
-		div.style.textAlign = 'left';
-		div.style.borderRadius = '6px';
-		div.style.zIndex = 9001; // OVER 9000!	
+
+		div.style.cssText = "position:fixed;top:35px;right:35px;width:550px;padding:10px;padding-top:40px;background:#fff;border:1px solid #ccc;text-align:left;border-radius:6px;z-index:9001;box-shadow:2px 2px 5px rgba(0,0,0,0.6);";
 		
 		heading = doc.createElement('h1');
-		heading.style.fontSize = '18px';
-		heading.style.color = '#444';
-		heading.style.margin = '5px';
-		heading.style.position = 'absolute';
-		heading.style.top = '0';
+		heading.style.cssText = "font-size:18px;font-weight:normal;margin:5px;position:absolute;top:0;";
 		heading.appendChild(doc.createTextNode('GET UR SELECTORZ!'));
 
 		input = doc.createElement("input");
@@ -73,7 +57,10 @@
 		var doc = document,
 			selector,
 			el,
-			tags = false;
+			tags = false,
+			temp,
+			elIndex,
+			tempIndex;
 
 		selector = doc.getElementById("selectorz_input").value;
 
@@ -81,9 +68,18 @@
 			el = doc.getElementById(selector);
 			tags = el.getElementsByTagName("*");
 		} else if (doc.getElementsByClassName(selector)) {
-			// @todo: what if return values is an array?
 			el = doc.getElementsByClassName(selector);
-			tags = el.getElementsByTagName("*");
+			if (el.length) {
+				tags = [];
+				for (elIndex = 0; elIndex < el.length; elIndex++) {
+					temp = el[elIndex].getElementsByTagName("*");
+					for (tempIndex = 0; tempIndex < temp.length; tempIndex++) {
+						tags.push(temp[tempIndex]);
+					}
+				}
+			} else {
+				tags = el.getElementsByTagName("*");
+			}
 		} else {
 			console.log("The Fuck is this!");
 		}
@@ -94,9 +90,9 @@
 	}
 
 	function inArray(needle, haystack) {
-		var i, length;
+		var i, length = haystack.length;
 
-		for (i = 0, length = haystack.length; i < length; i++) {
+		for (i = 0; i < length; i++) {
 			if (haystack[i] === needle) {
 				return true;
 			}
@@ -109,12 +105,12 @@
 			added = [],
 			tagIndex, 
 			classIndex,
-			length,
+			tagsLength = tags.length,
 			temp,
 			classes,
 			textarea;
 
-		for (tagIndex = 0, length = tags.length; tagIndex < length; tagIndex++) {
+		for (tagIndex = 0; tagIndex < tagsLength; tagIndex++) {
 			if (tags[tagIndex].id !== "") {
 				if (!inArray(tags[tagIndex].id, added)) {
 					temp = '$("#%s");';
@@ -122,7 +118,7 @@
 					added.push(tags[tagIndex].id);
 				}
 			} else if (tags[tagIndex].className !== "") {
-				classes = tags[tagIndex].className.split(" ");	
+				classes = tags[tagIndex].className.split(" ");
 				for (classIndex = 0; classIndex < classes.length; classIndex++) {
 					if (!inArray(classes[classIndex], added)) {
 						temp = '$(".%s");';
@@ -140,4 +136,3 @@
 
 	displayInput();
 })();
-
