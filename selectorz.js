@@ -58,6 +58,10 @@
 			selector,
 			el,
 			tags = false,
+            idTags = [],
+            classTags = [],
+            tagLength,
+            tagIndex,
 			temp,
 			elIndex,
 			tempIndex;
@@ -66,24 +70,39 @@
 
 		if (doc.getElementById(selector)) {
 			el = doc.getElementById(selector);
-			tags = el.getElementsByTagName("*");
-		} else if (doc.getElementsByClassName(selector)) {
+			idTags = el.getElementsByTagName("*");
+		} 
+        
+        if (doc.getElementsByClassName(selector)) {
 			el = doc.getElementsByClassName(selector);
 			if (el.length) {
-				tags = [];
 				for (elIndex = 0; elIndex < el.length; elIndex++) {
 					temp = el[elIndex].getElementsByTagName("*");
 					for (tempIndex = 0; tempIndex < temp.length; tempIndex++) {
-						tags.push(temp[tempIndex]);
+						classTags.push(temp[tempIndex]);
 					}
 				}
 			} else {
-				tags = el.getElementsByTagName("*");
+				classTags = el.getElementsByTagName("*");
 			}
 		} else {
 			console.log("The Fuck is this!");
 		}
 		
+        if (idTags.length || classTags.length) {
+            tags = [];
+
+            tagLength = idTags.length;
+            for (tagIndex = 0; tagIndex < tagLength; tagIndex++) {
+                tags.push(idTags[tagIndex]);
+            }
+
+            tagLength = classTags.length;
+            for (tagIndex = 0; tagIndex < tagLength; tagIndex++) {
+                tags.push(classTags[tagIndex]);
+            }
+        }
+
 		if (tags) {
 			selectorz_process(tags);
 		}
