@@ -1,5 +1,11 @@
-
 (function () {
+
+    var config = {
+        syntax: "js",
+        selector: "",
+        wrapper_id: "selectorz_wrapper"
+    };
+
 	function displayInput() {
 		var doc = document, 
 			div, 
@@ -7,50 +13,104 @@
 			heading,
 			link,
 			textarea,
-			close;
+			close,
+            chks,
+            selection,
+            subHeading,
+            syntax = [];
+
+        /**
+         * Creates checkboxes and labels for syntax selection
+         *
+         * @param array syntax Array of objects with value and label properties.
+         * @return {string} fragment HTML reprentation of param array.
+         */
+        function createSyntaxSelection(syntax) {
+            var doc = document,
+                i,
+                length = syntax.length || 0,
+                radio,
+                label,
+                text,
+                wrapper;
+                
+            wrapper = doc.createElement("div");
+
+            for (i = 0; i < length; i++) {
+                label = doc.createElement("label");
+
+                radio = doc.createElement("input");
+                radio.type = "radio";
+                radio.value = syntax[i].value;
+                radio.name = "seletorz_syntax";
+                
+                text = doc.createTextNode(syntax[i].label);
+
+                label.appendChild(radio);
+                label.appendChild(text);
+                wrapper.appendChild(label);
+            }
+
+            return wrapper;
+        }
 		
-		div = doc.createElement('div');
-		div.id = 'selectorz_wrapper';
+		div = doc.createElement("div");
+		div.id = config.wrapper_id;
 
 		div.style.cssText = "position:fixed;top:35px;right:35px;width:550px;padding:10px;padding-top:40px;background:#fff;border:1px solid #ccc;text-align:left;border-radius:6px;z-index:9001;box-shadow:2px 2px 5px rgba(0,0,0,0.6);";
 		
-		heading = doc.createElement('h1');
+		heading = doc.createElement("h1");
 		heading.style.cssText = "font-size:18px;font-weight:normal;margin:5px;position:absolute;top:0;";
-		heading.appendChild(doc.createTextNode('GET UR SELECTORZ!'));
+		heading.appendChild(doc.createTextNode("GET UR SELECTORZ!"));
 
 		input = doc.createElement("input");
 		input.id = "selectorz_input";
+        input.type = "text";
 
-		link = doc.createElement("a");
-		link.href = "#";
+        selection = doc.createElement("div");
+        syntax.push({label: "Dojo", value:"Dojo"});
+        syntax.push({label: "jQuery", value:"jQuery"});
+        syntax.push({label: "MooTools", value:"MooTools"});
+        syntax.push({label: "Vanilla Javascript", value:"js"});
+
+        subHeading = doc.createElement("h3");
+        subHeading.appendChild(doc.createTextNode("Choose output syntax"));
+        selection.appendChild(subHeading);
+        chks = createSyntaxSelection(syntax);
+        selection.appendChild(chks);
+
+        link = doc.createElement("a");
+        link.href = "#";
 		link.appendChild(doc.createTextNode("GET SOME"));
 		link.onclick = selectorz_getSome;
 
-		textarea = doc.createElement('textarea');
+		textarea = doc.createElement("textarea");
 		textarea.id = "selectorz_output";
-		textarea.style.width = '540px';
-		textarea.style.display = 'none';
+		textarea.style.width = "540px";
+		textarea.style.display = "none";
 		textarea.style.minHeight = "300px";
 		
-		close = doc.createElement('span');
-		close.style.position = 'absolute';
-		close.style.top = '10px';
-		close.style.right = '10px';
-		close.style.color = '#444';
-		close.style.cursor = 'pointer';
-		close.style.borderBottom = '1px solid #333';
+		close = doc.createElement("span");
+		close.style.position = "absolute";
+		close.style.top = "10px";
+		close.style.right = "10px";
+		close.style.color = "#444";
+		close.style.cursor = "pointer";
+		close.style.borderBottom = "1px solid #333";
 		close.onclick = function () {
 			// @todo: Check cross browser support
-			doc.body.removeChild(doc.getElementById('selectorz_wrapper'));
+			doc.body.removeChild(doc.getElementById("selectorz_wrapper"));
 		};
-		close.appendChild(doc.createTextNode('close'));
+		close.appendChild(doc.createTextNode("close"));
 
 		div.appendChild(heading);
 		div.appendChild(close);
 		div.appendChild(input);
 		div.appendChild(link);
+        div.appendChild(selection);
 		div.appendChild(textarea);
 		doc.body.appendChild(div);
+
 	}
 	
 	function selectorz_getSome() {
@@ -66,7 +126,9 @@
 			elIndex,
 			tempIndex;
 
+        selectorz_get_output_syntax();
 		selector = doc.getElementById("selectorz_input").value;
+        config.selector = selector;
 
 		if (doc.getElementById(selector)) {
 			el = doc.getElementById(selector);
@@ -128,15 +190,13 @@
 			tagIndex, 
 			classIndex,
 			tagsLength = tags.length,
-			temp,
 			classes,
 			textarea;
 
 		for (tagIndex = 0; tagIndex < tagsLength; tagIndex++) {
 			if (tags[tagIndex].id !== "") {
 				if (!UTILS.inArray(tags[tagIndex].id, added)) {
-					temp = '$("#%s");';
-					selectors.push(temp.replace("%s", tags[tagIndex].id));
+                    selectors.push(selectorz_get_output(tags[tagIndex].id, "id"));
 					added.push(tags[tagIndex].id);
 				}
 			} 
@@ -145,8 +205,7 @@
 				classes = tags[tagIndex].className.split(" ");
 				for (classIndex = 0; classIndex < classes.length; classIndex++) {
 					if (!UTILS.inArray(classes[classIndex], added)) {
-						temp = '$(".%s");';
-						selectors.push(temp.replace("%s", classes[classIndex]));
+                        selectors.push(selectorz_get_output(classes[classIndex], "class"));
 						added.push(classes[classIndex]);
 					}
 				}
@@ -157,7 +216,26 @@
 		textarea.innerHTML = selectors.join("\n");
 		textarea.style.display = "block";
 	}
-	
+
+    /**
+     * Detects which syntax ouput was selected. Sets selectex syntax to config.
+     *
+     * @return void
+     */
+    function selectorz_get_output_syntax() {
+        var wrapper = document.getElementById(config.wrapper_id),
+            inputs = wrapper.getElementsByTagName("input"),
+            inputIndex,
+            inputLength = inputs.length;
+        
+        for (inputIndex = 0; inputIndex < inputLength; inputIndex++) {
+            if (inputs[inputIndex].type === "radio" && inputs[inputIndex].checked) {
+                config.syntax = inputs[inputIndex].value;
+                return;
+            }
+        }
+    }
+
 	/**
 	 * Creates the selector for a found element.
 	 * 
@@ -169,8 +247,10 @@
 	 */
 	function selectorz_get_output (input, identifierType) {
 		var selector = "",
-			selectorLib = "js", //TODO: change this to use the config object.
+			selectorLib = config.syntax,
 			identifierBase = '$("%s");';
+
+        console.log(config);
 
 		switch (selectorLib) {
 			case "jQuery":
