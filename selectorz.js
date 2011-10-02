@@ -148,7 +148,7 @@
 	 */
 	function selectorz_get_output (input, identifierType) {
 		var selector = "",
-			selectorLib = "js",
+			selectorLib = "js", //TODO: change this to use the config object.
 			identifierBase = '$("%s");';
 
 		switch (selectorLib) {
@@ -168,7 +168,8 @@
 				identifierBase = "$(%s)";
 
 				if (identifierType === "class") {
-					selector = identifierBase.replace("%s", "document.body") + ".getElement('" + input + "');"
+					selector = identifierBase.replace("%s", "document.body") +
+							".getElement('" + input + "');";
 				} else {
 					selector = identifierBase.replace("%s", "'" + input + "'");
 				}
@@ -202,7 +203,5 @@
 		return selector;
 	}
 
-	console.log(selectorz_get_output("className", "class"));
-	console.log(selectorz_get_output("idName", "id"));
 	displayInput();
 })();
