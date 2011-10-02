@@ -120,7 +120,9 @@
 					selectors.push(temp.replace("%s", tags[tagIndex].id));
 					added.push(tags[tagIndex].id);
 				}
-			} else if (tags[tagIndex].className !== "") {
+			} 
+            
+            if (tags[tagIndex].className !== "") {
 				classes = tags[tagIndex].className.split(" ");
 				for (classIndex = 0; classIndex < classes.length; classIndex++) {
 					if (!UTILS.inArray(classes[classIndex], added)) {
