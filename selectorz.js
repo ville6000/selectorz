@@ -89,16 +89,19 @@
 		}
 	}
 
-	function inArray(needle, haystack) {
-		var i, length = haystack.length;
+	var UTILS = {
+		inArray: function (needle, haystack) {
+			var i,
+				length = haystack.length;
 
-		for (i = 0; i < length; i++) {
-			if (haystack[i] === needle) {
-				return true;
+			for (i = 0; i < length; i++) {
+				if (haystack[i] === needle) {
+					return true;
+				}
 			}
+			return false;
 		}
-		return false;
-	}
+	};
 
 	function selectorz_process(tags) {
 		var selectors = [],
@@ -112,7 +115,7 @@
 
 		for (tagIndex = 0; tagIndex < tagsLength; tagIndex++) {
 			if (tags[tagIndex].id !== "") {
-				if (!inArray(tags[tagIndex].id, added)) {
+				if (!UTILS.inArray(tags[tagIndex].id, added)) {
 					temp = '$("#%s");';
 					selectors.push(temp.replace("%s", tags[tagIndex].id));
 					added.push(tags[tagIndex].id);
@@ -120,7 +123,7 @@
 			} else if (tags[tagIndex].className !== "") {
 				classes = tags[tagIndex].className.split(" ");
 				for (classIndex = 0; classIndex < classes.length; classIndex++) {
-					if (!inArray(classes[classIndex], added)) {
+					if (!UTILS.inArray(classes[classIndex], added)) {
 						temp = '$(".%s");';
 						selectors.push(temp.replace("%s", classes[classIndex]));
 						added.push(classes[classIndex]);
