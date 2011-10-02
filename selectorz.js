@@ -148,7 +148,7 @@
 	 */
 	function selectorz_get_output (input, identifierType) {
 		var selector = "",
-			selectorLib = "MooTools",
+			selectorLib = "js",
 			identifierBase = '$("%s");';
 
 		switch (selectorLib) {
@@ -176,11 +176,24 @@
 				break;
 			case "Dojo":
 				//Dojo selector
+				identifierBase = 'dojo.query("%s");';
+
+				if (identifierType === "class") {
+					selector = identifierBase.replace("%s", "." + input);
+				} else {
+					selector = identifierBase.replace("%s", "#" + input);
+				}
 
 				break;
 			case "js":
-				//Plain JavaScript selector.
+				//Plain JavaScript selectors.
 
+				if (identifierType === "class") {
+					//TODO: This does not work on Internet Explorers 8 or older.
+					selector = 'document.getElementsByClassName("' + input + "');";
+				} else {
+					selector = 'document.getElementById("' + input + '");';
+				}
 				break;
 			default:
 				throw new Error("Invalid selector library.");
