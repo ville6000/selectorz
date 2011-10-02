@@ -136,6 +136,60 @@
 		textarea.innerHTML = selectors.join("\n");
 		textarea.style.display = "block";
 	}
+	
+	/**
+	 * Creates the selector for a found element.
+	 * 
+	 * @param {String} input Id or class for which the selector is created.
+	 * @param {String} identifierType Type of input, valid values are strings
+	 * "id" and class.
+	 * 
+	 * @return {String} Selector created from input.
+	 */
+	function selectorz_get_output (input, identifierType) {
+		var selector = "",
+			selectorLib = "MooTools",
+			identifierBase = '$("%s");';
 
+		switch (selectorLib) {
+			case "jQuery":
+				//jQuery selector
+				identifierBase = '$("%s")';
+
+				if (identifierType === "class") {
+					selector = identifierBase.replace("%s", "." + input);
+				} else {
+					selector = identifierBase.replace("%s", "#" + input);
+				}
+
+				break;
+			case "MooTools":
+				//MooTools selector
+				identifierBase = "$(%s)";
+
+				if (identifierType === "class") {
+					selector = identifierBase.replace("%s", "document.body") + ".getElement('" + input + "');"
+				} else {
+					selector = identifierBase.replace("%s", "'" + input + "'");
+				}
+
+				break;
+			case "Dojo":
+				//Dojo selector
+
+				break;
+			case "js":
+				//Plain JavaScript selector.
+
+				break;
+			default:
+				throw new Error("Invalid selector library.");
+		}
+
+		return selector;
+	}
+
+	console.log(selectorz_get_output("className", "class"));
+	console.log(selectorz_get_output("idName", "id"));
 	displayInput();
 })();
