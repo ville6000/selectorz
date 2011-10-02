@@ -22,8 +22,9 @@
         /**
          * Creates checkboxes and labels for syntax selection
          *
-         * @param array syntax Array of objects with value and label properties.
-         * @return {string} fragment HTML reprentation of param array.
+         * @param {Array} syntax Array of objects with value and label properties.
+         *
+         * @return {String} HTML div-element containin lables and checkboxes
          */
         function createSyntaxSelection(syntax) {
             var doc = document,
@@ -112,7 +113,15 @@
 		doc.body.appendChild(div);
 
 	}
-	
+    
+    /**
+     * Selects HTML-tags based on user given selector. 
+     * Searches for id's and classes.
+     *
+     * @see selectorz_process
+     *
+     * @return void
+     */
 	function selectorz_getSome() {
 		var doc = document,
 			selector,
@@ -184,6 +193,16 @@
 		}
 	};
 
+    /**
+     * Loops through tag-array and creates ouput. 
+     * Appends results to textarea. 
+     *
+     * @see selectorz_get_output
+     *
+     * @param {Array} tags Array of HTML tags. 
+     *
+     * @return void
+     */
 	function selectorz_process(tags) {
 		var selectors = [],
 			added = [],
@@ -218,7 +237,7 @@
 	}
 
     /**
-     * Detects which syntax ouput was selected. Sets selectex syntax to config.
+     * Sets config.syntax to user's selection.
      *
      * @return void
      */
@@ -289,7 +308,6 @@
 				break;
 			case "js":
 				//Plain JavaScript selectors.
-
 				if (identifierType === "class") {
 					//TODO: This does not work on Internet Explorers 8 or older.
 					selector = 'document.getElementsByClassName("' + input + "');";
