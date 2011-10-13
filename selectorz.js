@@ -33,17 +33,23 @@
                 radio,
                 label,
                 text,
-                wrapper;
+                wrapper,
+				style = "margin-right:12px;font-size:14px;font-weight:normal;cursor:pointer;font-family:sans-serif;";
                 
             wrapper = doc.createElement("div");
 
             for (i = 0; i < length; i++) {
                 label = doc.createElement("label");
+				label.style.cssText = style;
 
                 radio = doc.createElement("input");
                 radio.type = "radio";
                 radio.value = syntax[i].value;
                 radio.name = "seletorz_syntax";
+
+				if (i === 0) {
+					radio.checked = true;
+				}
                 
                 text = doc.createTextNode(syntax[i].label);
 
