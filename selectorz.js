@@ -159,9 +159,7 @@
 						classTags.push(temp[tempIndex]);
 					}
 				}
-			} else {
-				classTags = el.getElementsByTagName("*");
-			}
+			} 
 		} else {
 			console.log("The Fuck is this!");
 		}
@@ -274,8 +272,6 @@
 		var selector = "",
 			selectorLib = config.syntax,
 			identifierBase = '$("%s");';
-
-        console.log(config);
 
 		switch (selectorLib) {
 			case "jQuery":
