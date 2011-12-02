@@ -121,6 +121,8 @@
         div.appendChild(selection);
 		div.appendChild(textarea);
 		doc.body.appendChild(div);
+
+        input.focus();
 	}
     
     /**
