@@ -50,6 +50,10 @@
 				if (i === 0) {
 					radio.checked = true;
 				}
+
+                radio.onclick = function() {
+                    selectorz_getSome();
+                }
                 
                 text = doc.createTextNode(syntax[i].label);
 
@@ -117,7 +121,6 @@
         div.appendChild(selection);
 		div.appendChild(textarea);
 		doc.body.appendChild(div);
-
 	}
     
     /**
