@@ -281,7 +281,7 @@
 		switch (selectorLib) {
 			case "jQuery":
 				//jQuery selector
-				identifierBase = '$("%s")';
+				identifierBase = '$("%s");';
 
 				if (identifierType === "class") {
 					selector = identifierBase.replace("%s", "." + input);
